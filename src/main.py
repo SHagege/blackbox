@@ -5,12 +5,10 @@ from blockchain import Blockchain
 
 def main():
     blockchain = Blockchain()
-    print "Mining block 1..."
-    blockchain.add_block(Block(1))
-    print "Mining block 2..."
-    blockchain.add_block(Block(2))
-    print "Mining block 3..."
-    blockchain.add_block(Block(3))
+    index = 0
+    while True:
+        blockchain.add_block(Block(index))
+        index += 1
 
 if __name__ == "__main__":
     main()
