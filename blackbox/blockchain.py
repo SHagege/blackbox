@@ -2,6 +2,7 @@ from block import Block
 import datetime as date
 import twitter
 import sys
+import os
 
 class Blockchain:
   """
@@ -17,10 +18,11 @@ class Blockchain:
   """
   def __init__(self):
     self.nChain = []
-    self.nDifficulty = 2
+    self.nDifficulty = 3
     self.api = ""
     self.MAX_BLOCK_SIZE = 1024000
     self.BLOCK_SIZE = 0
+    self.currentFileIndex = 0
     self.genesis(Block(0))
     self.configure()
 
@@ -61,7 +63,25 @@ class Blockchain:
     bNew.previous_hash = self.get_lastBlock()
     bNew.mine_block(self.nDifficulty)
     self.nChain.append(bNew)
+    self.save_blocks(bNew)
     print "Block data: " + bNew.data
 
   def get_lastBlock(self):
     return self.nChain[-1]
+
+  def save_blocks(self, bNew):
+    """Save the new blocks in a blk*.dat file"""
+    fileName = "./blackbox/blocks/blk" + str(self.currentFileIndex) + ".dat"
+    if (os.path.isfile(fileName)):
+      statinfo = os.stat(fileName)
+      if (statinfo.st_size < 8000000):
+        with open(fileName, "a") as blkfile:
+          blkfile.write(bNew.data + '\n')
+      else:
+        self.currentFileIndex += 1
+        fileName = "./blackbox/blocks/blk" + str(self.currentFileIndex) + ".dat"
+        with open(fileName, "a") as blkfile:
+          blkfile.write(bNew.data + '\n')
+    else:
+      with open(fileName, "a") as blkfile:
+          blkfile.write(bNew.data + '\n')
