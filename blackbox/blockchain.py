@@ -9,22 +9,21 @@ class Blockchain:
   This class describes how the Blockchain is designed
 
   Attributes:
+    blockHeight: The height of the highest block
     nChain: The list containing all the blocks
-    nDifficulty: The overall difficulty to mine a block, the number reprensents the number of zero's
-    needed in front of a hash to mine correctly the block
-    api: Twitter's api to connect to Twitter and fetch tweets
     MAX_BLOCK_SIZE: The maximum block size of a block, here set to 1MB
-    BLOCK_SIZE: The current block size
+    currentFileIndex: The current index of the files where the blocks are saved
+    api: Twitter's api to connect to Twitter and fetch tweets
   """
   def __init__(self):
+    self.blockHeight = 1
     self.nChain = []
-    self.nDifficulty = 3
-    self.api = ""
-    self.MAX_BLOCK_SIZE = 1024000
-    self.BLOCK_SIZE = 0
+    self.MAX_BLOCK_SIZE = 1024
     self.currentFileIndex = 0
+    self.api = ""
     self.genesis(Block(0))
     self.configure()
+    self.run()
 
   def configure(self):
     """Read the config file to get user's credentials and connect to Twitter's API"""
@@ -46,25 +45,30 @@ class Blockchain:
     self.nChain.append(bGen)
     print "Block data: " + bGen.data
     
-  def fetch_data(self):
+  def run(self):
+    while True:
+      self.fill_block(Block(self.blockHeight))
+
+  def fill_block(self, bNew):
     """Fetch the tweets from Twitter's API"""
-    t = self.api.GetUserTimeline(screen_name="WeiRdCroissant", count=1)
+    t = self.api.GetUserTimeline(screen_name="WeiRdCroissant", count=2)
     tweets = [i.AsDict() for i in t]
     for t in tweets:
-      if (self.BLOCK_SIZE + sys.getsizeof(t['text'].encode('utf-8')) < self.MAX_BLOCK_SIZE):
-        self.BLOCK_SIZE += sys.getsizeof(t['text'].encode('utf-8'))
-        return (t['text'].encode('utf-8'))
-      return ""
-     
+      if (bNew.BLOCK_SIZE + sys.getsizeof(t['text'].encode('utf-8')) < self.MAX_BLOCK_SIZE):
+        bNew.BLOCK_SIZE += sys.getsizeof(t['text'].encode('utf-8'))
+        bNew.data.append((t['text'].encode('utf-8')))
+      else:
+        self.add_block(bNew)
+    self.add_block(bNew)
+
   def add_block(self, bNew):
-    """Set all the block parameters, mine it and add it to the blockchain"""
-    bNew.timestamp = date.datetime.now()
-    bNew.data = self.fetch_data()
+    """Block is full, meaning it needs to be mined and added to the blockchain"""
     bNew.previous_hash = self.get_lastBlock()
-    bNew.mine_block(self.nDifficulty)
+    bNew.mine_block()
     self.nChain.append(bNew)
     self.save_blocks(bNew)
-    print "Block data: " + bNew.data
+    self.blockHeight += 1
+    print "Block's hash: " + bNew.hash
 
   def get_lastBlock(self):
     return self.nChain[-1]
@@ -76,12 +80,18 @@ class Blockchain:
       statinfo = os.stat(fileName)
       if (statinfo.st_size < 8000000):
         with open(fileName, "a") as blkfile:
-          blkfile.write(bNew.data + '\n')
+          blkfile.write("Block height: " + str(bNew.height) + " Block hash: " + bNew.hash + " Timestamp " + str(bNew.timestamp) + '\n')
+          for item in bNew.data:
+            blkfile.write("%s\n" % item)
       else:
         self.currentFileIndex += 1
         fileName = "./blackbox/blocks/blk" + str(self.currentFileIndex) + ".dat"
         with open(fileName, "a") as blkfile:
-          blkfile.write(bNew.data + '\n')
+          blkfile.write("Block height: " + str(bNew.height) + " Block hash: " + bNew.hash + " Timestamp " + str(bNew.timestamp) + '\n')
+          for item in bNew.data:
+            blkfile.write("%s\n" % item)
     else:
       with open(fileName, "a") as blkfile:
-          blkfile.write(bNew.data + '\n')
+          blkfile.write("Block height: " + str(bNew.height) + " Block hash: " + bNew.hash + " Timestamp " + str(bNew.timestamp) + '\n')
+          for item in bNew.data:
+            blkfile.write("%s\n" % item)
