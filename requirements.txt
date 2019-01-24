@@ -1,1 +1,2 @@
 python-twitter==3.5
+python-instagram==1.3.2
