@@ -21,11 +21,11 @@ class Block:
 
     def __init__(self, height):
         self.height = height
-        self.merkleTree = ""
-        self.nDifficulty = 6
+        self.merkleTree = None
+        self.nDifficulty = 5
         self.timestamp = 0
         self.data = []
-        self.prevhash = ""
+        self.prevhash = None
         self.nonce = 0
         self.BLOCK_SIZE = 0
         self.hash = self.hash_block()
@@ -49,3 +49,6 @@ class Block:
         while ((self.hash[0:self.nDifficulty - 1].strip('\0')) != difficulty.strip('\0')):
             self.nonce += 1
             self.hash = self.hash_block()
+
+    def print_block_content(self):
+        print self.data
