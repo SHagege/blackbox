@@ -1,12 +1,16 @@
-from block import Block
-import datetime as date
-from smapi import Smapi
-from smdata import Smdata
-import threading
-import twitter
-import instagram
 import sys
 import os
+import time
+import threading
+import datetime as date
+from random import randint
+
+from py2p import mesh, base
+from termcolor import colored
+
+from .block import Block
+from .smapi import Smapi
+from .smdata import Smdata
 
 class Blockchain:
   """
@@ -19,35 +23,61 @@ class Blockchain:
     currentFileIndex: The current index of the files where the blocks are saved
     mempool: Temporary list of unconfirmed social media data, keep track of transactions
     that are known to the network but are not yet included in the blockchain
+    account: The social media account to monitor
+    daemon: The daemon to connect to
+    port: The port to connect to
   """
-  def __init__(self):
+  def __init__(self, account, port, daemon):
     self.blockHeight = 1
     self.nChain = []
     self.MAX_BLOCK_SIZE = 1024
     self.currentFileIndex = 0
+    self.openingPort = 0
     self.mempool = []
+    self.account = account
+    self.daemon = daemon
+    self.port = port
     self.sm = Smapi()
+    self.Node = self.startNode()
+    self.sync()
     self.genesis(Block(0))
+    self.mempoolHandling()
     self.run()
+
+  def startNode(self):
+    """Each blockchain instance is a node which other nodes can connect to
+    Each node broadcast new blocks to other nodes"""
+    self.openingPort = randint(4000, 5000)
+    print("Node operating at " + str(self.openingPort))
+    sock = mesh.MeshSocket('0.0.0.0', self.openingPort)
+    if self.port:
+      sock.connect(self.daemon, int(self.port))
+    else:
+      sock.connect(self.daemon, self.openingPort)
+    return sock
+
+  def sync(self):
+     threading.Timer(10.0, self.sync).start()
+     msg = self.Node.recv()
+     if msg:
+       print(msg)
 
   def genesis(self, bGen):
     """Create the genesis block of the blockchain with nothing in it"""
     bGen.timestamp = date.datetime.now()
     bGen.previous_hash = 0
-    bGen.data = "Genesis Block"
+    bGen.data.append("Genesis Block")
     self.add_block(bGen)
     
   def run(self):
-    """"""
-    self.mempoolHandling()
     while True:
       self.fill_block(Block(self.blockHeight))
 
   def mempoolHandling(self):
     """Starts a new thread that will handle the memory pool, putting inside it every X seconds Y 
     tweets from a social media account"""
-    threading.Timer(14.0, self.mempoolHandling).start()
-    t = self.sm.apiTwitter.GetUserTimeline(screen_name="NESbot_feed", count=10)
+    threading.Timer(10.0, self.mempoolHandling).start()
+    t = self.sm.apiTwitter.GetUserTimeline(screen_name=self.account, count=5)
     tweets = [i.AsDict() for i in t]
     for t in tweets:
       self.mempool.append(Smdata(t['text'].encode('utf-8')))
@@ -73,7 +103,8 @@ class Blockchain:
     self.nChain.append(bNew)
     self.save_blocks(bNew)
     self.blockHeight += 1
-    print "Block's hash: " + bNew.hash
+    print(colored("Block's hash: ", "green") + bNew.hash)
+    self.Node.send("I'm 4444 and I just finished mining block " + str(self.blockHeight))
 
   def get_lastBlock(self):
     if self.nChain:
