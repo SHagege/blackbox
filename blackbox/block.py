@@ -1,7 +1,7 @@
 import hashlib
-import datetime as date
 import calendar
 import time
+import datetime as date
 
 class Block:
     """
@@ -33,8 +33,8 @@ class Block:
     def hash_block(self):
         """Hash the block by doing a double SHA256 encoding with the block's attributes"""
         self.timestamp = calendar.timegm(time.gmtime())
-        sha = hashlib.sha256(str(self.height) + str(self.timestamp) + 
-        str(self.data) + str(self.prevhash) + str(self.nonce) + str(self.nDifficulty))
+        sha = hashlib.sha256(str(self.height).encode('utf-8') + str(self.timestamp).encode('utf-8') + 
+        str(self.data).encode('utf-8') + str(self.prevhash).encode('utf-8') + str(self.nonce).encode('utf-8') + str(self.nDifficulty).encode('utf-8'))
         dsha = hashlib.sha256()
         sha.hexdigest()
         dsha.update(sha.digest())
@@ -51,4 +51,9 @@ class Block:
             self.hash = self.hash_block()
 
     def print_block_content(self):
-        print self.data
+        print(self.data)
+
+    def formating(self):
+        magic_number = "0xD9B4BEF9"
+        size = 0
+
