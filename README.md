@@ -7,11 +7,14 @@ I decided to create this little project called Blackbox.
 
 Blackbox is storing all your social media data, first from Twitter but in the long term from every social media
 into a personal, private blockchain. That way, everything is recorded and nothing can be modified or alternated.
-Just like the Bitcoin protocol, Blackbox put inside blocks tweets, Facebook statuses, Instagram pictures and so on
+Just like the Bitcoin protocol, Blackbox put Tweets, Facebook statuses, Instagram pictures and so on
 into blocks. 
 
 ## Installing
 Run
 ```
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
+
+## Configuration
+You'll need to get API access for Twitter and Instagram.
