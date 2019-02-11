@@ -1,5 +1,5 @@
 import twitter
-import instagram
+import json
 
 class Smapi:
     """
@@ -11,13 +11,10 @@ class Smapi:
         self.configure()
 
     def configure(self):
-        """Read the config file to get user's credentials and connect to Twitter's API"""
-        fp = open('config.txt')
-        lines = fp.read().split("\n")
-        fp.close()
-        with open('config.txt') as fp:
-            lines = fp.readlines()
-        self.apiTwitter = twitter.Api(consumer_key=lines[0].split('=')[1].strip('\n').strip("'"), 
-            consumer_secret=lines[1].split('=')[1].strip('\n').strip("'"),
-            access_token_key=lines[2].split('=')[1].strip('\n').strip("'"), 
-            access_token_secret=lines[3].split('=')[1].strip('\n').strip("'"))
+        """Read config file and set the Twitter API"""
+        with open('config.json') as json_data_file:
+            data = json.load(json_data_file)
+        self.apiTwitter = twitter.Api(consumer_key=data["twitter"]["consumer_key"],
+            consumer_secret=data["twitter"]["consumer_secret"],
+            access_token_key=data["twitter"]["access_token_key"],
+            access_token_secret=data["twitter"]["access_token_secret"])
