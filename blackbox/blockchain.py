@@ -28,7 +28,7 @@ class Blockchain:
     port: The port to connect to
   """
   def __init__(self, account, port, daemon):
-    self.blockHeight = 1
+    self.blockHeight = 0
     self.nChain = []
     self.MAX_BLOCK_SIZE = 1024
     self.currentFileIndex = 0
@@ -49,7 +49,7 @@ class Blockchain:
     Each node broadcast new blocks to other nodes"""
     self.openingPort = randint(4000, 5000)
     print("Node operating at " + str(self.openingPort))
-    sock = mesh.MeshSocket('0.0.0.0', self.openingPort)
+    sock = mesh.MeshSocket('0.0.0.0', self.openingPort, prot=base.Protocol('mesh', 'SSL'))
     if self.port:
       sock.connect(self.daemon, int(self.port))
     else:
@@ -60,13 +60,20 @@ class Blockchain:
      threading.Timer(10.0, self.sync).start()
      msg = self.Node.recv()
      if msg:
-       print(msg)
+       fileName = "./blackbox/blocks/blk" + str(self.currentFileIndex) + ".dat"
+       if (os.path.isfile(fileName)):
+         statinfo = os.stat(fileName)
+         if (statinfo.st_size < 8000000):
+           with open(fileName, "a") as blkfile:
+             blkfile.write(str(msg) + '\n')
+             self.blockHeight += 1
+
 
   def genesis(self, bGen):
     """Create the genesis block of the blockchain with nothing in it"""
     bGen.timestamp = date.datetime.now()
     bGen.previous_hash = 0
-    bGen.data.append("Genesis Block")
+    bGen.data.append("genesis_block")
     self.add_block(bGen)
     
   def run(self):
@@ -80,15 +87,16 @@ class Blockchain:
     t = self.sm.apiTwitter.GetUserTimeline(screen_name=self.account, count=5)
     tweets = [i.AsDict() for i in t]
     for t in tweets:
-      self.mempool.append(Smdata(t['text'].encode('utf-8')))
+      smdata = Smdata(t['text'].encode('utf-8'))
+      self.mempool.append(smdata.smdataID)
 
   def fill_block(self, bNew):
     """Fetch the tweets from Twitter's API"""
     while self.mempool:
       smdata = self.mempool.pop(0)
       if (bNew.BLOCK_SIZE + sys.getsizeof(smdata) < self.MAX_BLOCK_SIZE):
-        bNew.data.append(smdata.data)
-        bNew.BLOCK_SIZE += sys.getsizeof(smdata.data)
+        bNew.data.append(smdata)
+        bNew.BLOCK_SIZE += sys.getsizeof(smdata)
         if not self.mempool:
           self.add_block(bNew)
       else:
@@ -102,9 +110,9 @@ class Blockchain:
     bNew.mine_block()
     self.nChain.append(bNew)
     self.save_blocks(bNew)
+    print(colored("Block " + str(bNew.height) + " content: ", "green") + bNew.content)
+    self.Node.send("Block height: " + str(bNew.height) + " Block hash: " + bNew.block_header + " Timestamp " + str(bNew.timestamp) + '\n')
     self.blockHeight += 1
-    print(colored("Block's hash: ", "green") + bNew.hash)
-    self.Node.send("I'm 4444 and I just finished mining block " + str(self.blockHeight))
 
   def get_lastBlock(self):
     if self.nChain:
@@ -118,18 +126,12 @@ class Blockchain:
       statinfo = os.stat(fileName)
       if (statinfo.st_size < 8000000):
         with open(fileName, "a") as blkfile:
-          blkfile.write("Block height: " + str(bNew.height) + " Block hash: " + bNew.hash + " Timestamp " + str(bNew.timestamp) + '\n')
-          for item in bNew.data:
-            blkfile.write("%s\n" % item)
+          blkfile.write(bNew.content + '\n')
       else:
         self.currentFileIndex += 1
         fileName = "./blackbox/blocks/blk" + str(self.currentFileIndex) + ".dat"
         with open(fileName, "a") as blkfile:
-          blkfile.write("Block height: " + str(bNew.height) + " Block hash: " + bNew.hash + " Timestamp " + str(bNew.timestamp) + '\n')
-          for item in bNew.data:
-            blkfile.write("%s\n" % item)
+          blkfile.write(bNew.content + '\n')
     else:
       with open(fileName, "a") as blkfile:
-          blkfile.write("Block height: " + str(bNew.height) + " Block hash: " + bNew.hash + " Timestamp " + str(bNew.timestamp) + '\n')
-          for item in bNew.data:
-            blkfile.write("%s\n" % item)
+          blkfile.write(bNew.content + '\n')
