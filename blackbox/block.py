@@ -16,21 +16,23 @@ class Block:
         prevhash: The hash from the last block
         nonce: How many times the system had to mine to find the correct hash
         BLOCK_SIZE: The current size of the block
-        hash: The hash of the block
+        content: The content of the block
+        block_header: The hash of the block
     """
 
     def __init__(self, height):
         self.height = height
         self.merkleTree = None
-        self.nDifficulty = 5
+        self.nDifficulty = 4
         self.timestamp = 0
         self.data = []
         self.prevhash = None
         self.nonce = 0
         self.BLOCK_SIZE = 0
-        self.hash = self.hash_block()
+        self.content = None
+        self.block_header = self.proof_of_work()
 
-    def hash_block(self):
+    def proof_of_work(self):
         """Hash the block by doing a double SHA256 encoding with the block's attributes"""
         self.timestamp = calendar.timegm(time.gmtime())
         sha = hashlib.sha256(str(self.height).encode('utf-8') + str(self.timestamp).encode('utf-8') + 
@@ -46,14 +48,18 @@ class Block:
         cstr = [0] * self.nDifficulty
         cstr[self.nDifficulty - 1] = '\0'
         difficulty = "".join(str(x) for x in cstr)
-        while ((self.hash[0:self.nDifficulty - 1].strip('\0')) != difficulty.strip('\0')):
+        while ((self.block_header[0:self.nDifficulty - 1].strip('\0')) != difficulty.strip('\0')):
             self.nonce += 1
-            self.hash = self.hash_block()
+            self.block_header = self.proof_of_work()
+        self.constructFileContent()
 
     def print_block_content(self):
         print(self.data)
 
-    def formating(self):
-        magic_number = "0xD9B4BEF9"
-        size = 0
-
+    def constructFileContent(self):
+        all_data = ""
+        magic_bytes = "f9beb4d9"
+        dataCount = len(self.data)
+        for id_data in self.data:
+            all_data += id_data
+        self.content = magic_bytes + str(dataCount) + all_data
