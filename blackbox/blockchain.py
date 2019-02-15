@@ -24,10 +24,10 @@ class Blockchain:
     mempool: Temporary list of unconfirmed social media data, keep track of transactions
     that are known to the network but are not yet included in the blockchain
     account: The social media account to monitor
-    daemon: The daemon to connect to
+    ip: The ip to connect to
     port: The port to connect to
   """
-  def __init__(self, account, port, daemon):
+  def __init__(self, account, port, ip):
     self.blockHeight = 0
     self.nChain = []
     self.MAX_BLOCK_SIZE = 1024
@@ -35,7 +35,7 @@ class Blockchain:
     self.openingPort = 0
     self.mempool = []
     self.account = account
-    self.daemon = daemon
+    self.ip = ip
     self.port = port
     self.sm = Smapi()
     self.Node = self.startNode()
@@ -51,9 +51,9 @@ class Blockchain:
     print("Node operating at " + str(self.openingPort))
     sock = mesh.MeshSocket('0.0.0.0', self.openingPort, prot=base.Protocol('mesh', 'SSL'))
     if self.port:
-      sock.connect(self.daemon, int(self.port))
+      sock.connect(self.ip, int(self.port))
     else:
-      sock.connect(self.daemon, self.openingPort)
+      sock.connect(self.ip, self.openingPort)
     return sock
 
   def sync(self):
