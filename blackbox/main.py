@@ -20,7 +20,7 @@ def welcome():
 
 def main():
     account = welcome()
-    Blockchain(account, opts.port, opts.daemon)
+    Blockchain(account, opts.port, opts.ip)
     
 if __name__ == "__main__":
     main()
