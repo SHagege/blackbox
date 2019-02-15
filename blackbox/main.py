@@ -6,7 +6,7 @@ from termcolor import colored
 from .blockchain import Blockchain
 
 parser = argparse.ArgumentParser(description='Blackbox "Alpha One" (v0.1.0-release)')
-parser.add_argument("--daemon", required=True, help='The daemon you want to connect to')
+parser.add_argument("--ip", required=True, help='The ip you want to connect to')
 parser.add_argument("--port", required=False, help='The port associated with the daemon')
 opts = parser.parse_args()
 
