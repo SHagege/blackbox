@@ -1,5 +1,5 @@
 python-twitter==3.5
-pyp2p==0.8.2
+py2p==0.7.878
 psutil==5.5.0
 paramiko==2.4.2
 cryptography==2.5
