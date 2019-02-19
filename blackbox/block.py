@@ -62,4 +62,4 @@ class Block:
         dataCount = len(self.data)
         for id_data in self.data:
             all_data += id_data
-        self.content = magic_bytes + str(dataCount) + all_data
+        self.content = magic_bytes + str(dataCount) + self.block_header + '|' + all_data

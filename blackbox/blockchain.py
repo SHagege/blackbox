@@ -83,12 +83,12 @@ class Blockchain:
   def mempoolHandling(self):
     """Starts a new thread that will handle the memory pool, putting inside it every X seconds Y 
     tweets from a social media account"""
-    threading.Timer(10.0, self.mempoolHandling).start()
-    t = self.sm.apiTwitter.GetUserTimeline(screen_name=self.account, count=5)
+    threading.Timer(120.0, self.mempoolHandling).start()
+    t = self.sm.apiTwitter.GetUserTimeline(screen_name=self.account, count=10)
     tweets = [i.AsDict() for i in t]
     for t in tweets:
-      smdata = Smdata(t['text'].encode('utf-8'))
-      self.mempool.append(smdata.smdataID)
+      smdata = Smdata(t['text'])
+      self.mempool.append(smdata.inFileContent)
 
   def fill_block(self, bNew):
     """Fetch the tweets from Twitter's API"""
