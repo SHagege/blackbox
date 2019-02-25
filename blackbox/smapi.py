@@ -4,6 +4,10 @@ import json
 class Smapi:
     """
     Social Media class, read config file and setup Twitter and Instagram API's
+
+    Attributes:
+       apiTwitter: Twitter API
+       apiInstagram: Instagram API
     """
     def __init__(self):
         self.apiTwitter = None

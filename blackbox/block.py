@@ -23,12 +23,13 @@ class Block:
     def __init__(self, height):
         self.height = height
         self.merkleTree = None
-        self.nDifficulty = 4
+        self.nDifficulty = 6
         self.timestamp = 0
         self.data = []
         self.prevhash = None
         self.nonce = 0
         self.BLOCK_SIZE = 0
+        self.blockFound = False
         self.content = None
         self.block_header = self.proof_of_work()
 
@@ -49,8 +50,11 @@ class Block:
         cstr[self.nDifficulty - 1] = '\0'
         difficulty = "".join(str(x) for x in cstr)
         while ((self.block_header[0:self.nDifficulty - 1].strip('\0')) != difficulty.strip('\0')):
-            self.nonce += 1
-            self.block_header = self.proof_of_work()
+            if self.blockFound is False:
+                self.nonce += 1
+                self.block_header = self.proof_of_work()
+            else:
+                return
         self.constructFileContent()
 
     def print_block_content(self):
