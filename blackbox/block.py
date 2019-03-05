@@ -7,7 +7,7 @@ class Block:
     """
     This class describes what a block contains and functions to mine them
 
-    Attributes:
+    Args:
         height: The height of the block
         merkleTree: hash of all the hash of the data inside the block
         nDifficulty: The difficulty of the current block
@@ -21,9 +21,15 @@ class Block:
     """
 
     def __init__(self, height):
+        """
+        Create a new block
+
+        Args:
+            height: The height at which the block needs to be created 
+        """
         self.height = height
         self.merkleTree = None
-        self.nDifficulty = 6
+        self.nDifficulty = 5
         self.timestamp = 0
         self.data = []
         self.prevhash = None
@@ -43,27 +49,34 @@ class Block:
         dsha.update(sha.digest())
         return dsha.hexdigest()
 
-    def mine_block(self):
+    def mine_block(self, node):
         """Create the difficulty (i.e how many zero's need to be in front of the hash)
-        and loop through hash_block until the system finds the correct hash"""
+        and loop through hash_block until the system finds the correct hash
+        
+        Args:
+            node: The node of the blockchain
+        """
         cstr = [0] * self.nDifficulty
         cstr[self.nDifficulty - 1] = '\0'
         difficulty = "".join(str(x) for x in cstr)
         while ((self.block_header[0:self.nDifficulty - 1].strip('\0')) != difficulty.strip('\0')):
-            if self.blockFound is False:
+            if node.verified_block is False or node.nodes is not "yes":
                 self.nonce += 1
                 self.block_header = self.proof_of_work()
             else:
+                node.get_blockheight()
                 return
         self.constructFileContent()
+        return self.block_header
 
     def print_block_content(self):
         print(self.data)
 
     def constructFileContent(self):
+        """What is written inside the blk*.dat files"""
         all_data = ""
         magic_bytes = "f9beb4d9"
         dataCount = len(self.data)
         for id_data in self.data:
-            all_data += id_data
+            all_data += id_data.inFileContent
         self.content = magic_bytes + str(dataCount) + self.block_header + '|' + all_data
