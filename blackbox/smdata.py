@@ -14,6 +14,11 @@ class Smdata:
        inFileContent: DataID + data in base64
     """
     def __init__(self, data):
+        """Create an smdata instance
+
+        Args:
+            data: The data of the smdata (i.e the tweet)
+        """
         self.smdataID = None
         self.data = data
         self.inFileContent = None
@@ -22,9 +27,7 @@ class Smdata:
 
     def generate_smadataID(self):
         """Create a unique dataID through sha256 encoding"""
-        timestamp = calendar.timegm(time.gmtime())
-        sha = hashlib.sha256(str(timestamp).encode('utf-8') + 
-        str(self.data).encode('utf-8'))
+        sha = hashlib.sha256(str(self.data).encode('utf-8'))
         dsha = hashlib.sha256()
         sha.hexdigest()
         dsha.update(sha.digest())
