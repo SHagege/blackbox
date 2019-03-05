@@ -3,9 +3,12 @@
 In the recents months we've seen some big privacy and censorship problems coming from Facebook, Twitter and alike social medias.
 We can't trust those platforms anymore, as we can't be sure that what we post will stay forever or be suppressed
 by those corporations because they don’t like what we've said, or because someone else (e.g., the government) told them to take it down.
+We also see more and more individuals trying to delete social media posts because they want to cover something they said at some point
+in time.
 
 Blackbox is a program that uses blockchain to put every single thing an individual do or say on social media on a permisionless blockchain. 
-Anyone can join and confirm through proof-of-work that someone said something at some point in time.
+Anyone can join and confirm through proof-of-work that someone said something at some point in time. It's censorship resistant, and act as a great
+surveillance tool.
 
 ## Requirements
 
