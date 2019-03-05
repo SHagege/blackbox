@@ -1,6 +1,6 @@
 python-twitter==3.5
-py2p==0.7.878
 psutil==5.5.0
 paramiko==2.4.2
-cryptography==2.5
 termcolor==1.1.0
+kademlia==2.2
+rpcudp==3.0.0
