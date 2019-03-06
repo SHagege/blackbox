@@ -98,21 +98,28 @@ class Node:
         Args:
             block_hash: The hash of the block found by the participating node
         """
+        key = "blk" + str(self.block_height)
         if self.connecting_port is None and block_hash is not None:
             asyncio.run_coroutine_threadsafe(self.node.set("block_height", self.block_height + 1), self.loop)
-            asyncio.run_coroutine_threadsafe(self.node.set("block_hash", block_hash), self.loop)
+            asyncio.run_coroutine_threadsafe(self.node.set(key, block_hash), self.loop)
         elif block_hash is not None and self.block_height is not 0:
             self.loop.run_until_complete(self.node.set("block_height", self.block_height + 1))
-            self.loop.run_until_complete(self.node.set("block_hash", block_hash))
+            self.loop.run_until_complete(self.node.set(key, block_hash))
+
+    def get_last_block(self):
+        key = "blk" + str(self.block_height)
+        if self.connecting_port is None:
+            return asyncio.run_coroutine_threadsafe(self.node.get(key), self.loop)
+        return self.loop.run_until_complete(self.node.get(key))
 
     def verify(self):
         """Verify if a block_hash found by a node is a correct one"""
+        key = "blk" + str(self.block_height)
         if self.connecting_port is None and self.nodes is not "yes":
             self.nodes = asyncio.run_coroutine_threadsafe(self.node.get("nodes"), self.loop)
             self.verified_block = True
             return
-        result = self.loop.run_until_complete(self.node.get("block_hash"))
-        if result is not None and result is not 0:
+        result = self.loop.run_until_complete(self.node.get(key))
+        if result is not None:
             if result.startswith("0000"):
-                self.loop.run_until_complete(self.node.set("block_hash", str(0)))
                 self.verified_block = True

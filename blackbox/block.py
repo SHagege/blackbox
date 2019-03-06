@@ -13,7 +13,7 @@ class Block:
         nDifficulty: The difficulty of the current block
         timestamp: When the block was created
         data: Which data is put in the block
-        prevhash: The hash from the last block
+        previous_hash: The hash from the last block
         nonce: How many times the system had to mine to find the correct hash
         BLOCK_SIZE: The current size of the block
         content: The content of the block
@@ -32,7 +32,7 @@ class Block:
         self.nDifficulty = 5
         self.timestamp = 0
         self.data = []
-        self.prevhash = None
+        self.previous_hash = None
         self.nonce = 0
         self.BLOCK_SIZE = 0
         self.blockFound = False
@@ -43,7 +43,7 @@ class Block:
         """Hash the block by doing a double SHA256 encoding with the block's attributes"""
         self.timestamp = calendar.timegm(time.gmtime())
         sha = hashlib.sha256(str(self.height).encode('utf-8') + str(self.timestamp).encode('utf-8') + 
-        str(self.data).encode('utf-8') + str(self.prevhash).encode('utf-8') + str(self.nonce).encode('utf-8') + str(self.nDifficulty).encode('utf-8'))
+        str(self.data).encode('utf-8') + str(self.previous_hash).encode('utf-8') + str(self.nonce).encode('utf-8') + str(self.nDifficulty).encode('utf-8'))
         dsha = hashlib.sha256()
         sha.hexdigest()
         dsha.update(sha.digest())

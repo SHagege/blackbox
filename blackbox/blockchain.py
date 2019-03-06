@@ -18,7 +18,6 @@ class Blockchain:
 
     Attributes:
       blockHeight: The height of the highest block
-      nChain: The list containing all the blocks
       MAX_BLOCK_SIZE: The maximum block size of a block, here set to 1MB
       currentFileIndex: The current index of the files where the blocks are saved
       mempool: Temporary list of unconfirmed social media data, keep track of transactions
@@ -33,12 +32,12 @@ class Blockchain:
           port: The port you wish to bootstrap to
           ip: The ip you wish to connect to
       """
-      self.nChain = []
       self.MAX_BLOCK_SIZE = 1024
       self.currentFileIndex = 0
       self.openingPort = 0
       self.mempool = []
       self.account = account
+      self.last_block_hash = None
       self.sm = Smapi()
       self.Node = Node(port, ip)
       self.mempoolHandling()
@@ -81,21 +80,17 @@ class Blockchain:
 
     def add_block(self, bNew):
       """Block is full, meaning it needs to be mined and added to the blockchain"""
-      bNew.previous_hash = self.get_lastBlock()
+      bNew.previous_hash = self.last_block_hash
       block_hash = bNew.mine_block(self.Node)
       self.Node.set_hash(block_hash)
       self.Node.verify()
       if self.Node.verified_block is True:
-        self.nChain.append(bNew)
+        self.last_block_hash = self.Node.get_last_block()
         self.save_blocks(bNew)
         print(colored("Block " + str(bNew.height) + " content: ", "green") + bNew.content)
         self.Node.block_height += 1
+        self.Node.verified_block = False
         return
-
-    def get_lastBlock(self):
-      if self.nChain:
-        return self.nChain[-1]
-      return None
 
     def save_blocks(self, bNew):
       """Save the new blocks in a blk*.dat file"""

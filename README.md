@@ -43,10 +43,7 @@ To list all available options, run `./bin/run --help`
 You need to specify an ip using `--ip`. If you're running on your local machine, use `127.0.0.1`
 
 Running multiple instances of the program will need you to specify a port using `--port`. After launching the first instance
-blackbox will tell you which port it's currently using.
-
-Because of Kademlia's specifications, to use blackbox peer-to-peer functionalities a minimum of 3 peers will need to connect to the network in order
-to mine the blocks and monitor the Twitter account. Solo mining is a posibility but defeats the main purpose of a decentralized network. 
+blackbox will tell you which port it's currently using. Solo mining is a posibility but defeats the main purpose of a decentralized network. 
 
 All the data is stored in `blackbox/blocks/` into `blk*.dat` files. How they are stored is similar to [Bitcoin](http://learnmeabitcoin.com/glossary/blkdat)'s approach.
 Blocks start with a magic byte, the block header, each social media ID alongside the data inside it encoded in base64.
