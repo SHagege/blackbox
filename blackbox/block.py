@@ -2,6 +2,16 @@ import hashlib
 import calendar
 import time
 import datetime as date
+import os
+import sys
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "explorer.settings")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/explorer"
+sys.path.append(BASE_DIR)
+import django
+
+django.setup()
+from blocks.models import BlockModel
 
 class Block:
     """
@@ -29,7 +39,7 @@ class Block:
         """
         self.height = height
         self.merkleTree = None
-        self.nDifficulty = 5
+        self.nDifficulty = 6
         self.timestamp = 0
         self.data = []
         self.previous_hash = None
@@ -67,6 +77,7 @@ class Block:
                 node.get_blockheight()
                 return
         self.constructFileContent()
+        BlockModel.objects.create(block_height=self.height, block_hash=self.block_header, timestamp=self.timestamp)
         return self.block_header
 
     def print_block_content(self):
