@@ -6,14 +6,16 @@ by those corporations because they don’t like what we've said, or because some
 We also see more and more individuals trying to delete social media posts because they want to cover something they said at some point
 in time.
 
-Blackbox is a program that uses blockchain to put every single thing an individual do or say on social media on a permisionless blockchain. 
+Blackbox is a program that uses blockchain technology to put every single thing an individual do or say on social media on a permisionless blockchain. 
 Anyone can join and confirm through proof-of-work that someone said something at some point in time. It's censorship resistant, and act as a great
 surveillance tool.
 
 ## Requirements
 
-- [python-twitter](https://github.com/bear/python-twitter)
 - [Kademlia](https://github.com/bmuller/kademlia)
+- [Django](https://github.com/django/django)
+- [Bulma](https://github.com/jgthms/bulma)
+- [python-twitter](https://github.com/bear/python-twitter)
 
 ## Installation
 
@@ -31,7 +33,14 @@ Once you have your access tokens, you can edit the config.json file.
 
 ## Kademlia
 Blackbox utilizes the [Kademlia Protocol](https://pdos.csail.mit.edu/~petar/papers/maymounkov-kademlia-lncs.pdf). Kademlia is a distributed
-hash table for building decentralized peer-to-peer networks (used in well known products like [BitTorrent](https://en.wikipedia.org/wiki/BitTorrent) or [Ethereum](https://www.ethereum.org/))
+hash table for building decentralized peer-to-peer networks (used in well known products like [BitTorrent](https://en.wikipedia.org/wiki/BitTorrent) or [Ethereum](https://www.ethereum.org/)).
+
+## Block Explorer
+Blackbox's block explorer is built using Django. You can run your own server instance by running at the root directory
+`python3 explorer/manage.py runserver`.
+
+By default the explorer is available at `127.0.0.1:8000`.
+You can search using block height, hash or social media data ID.
 
 ## Running blackbox
 
@@ -39,8 +48,8 @@ The bin is placed in the `bin/` sub-directory. To run in for-ground:
 ```
 ./bin/run
 ```
-To list all available options, run `./bin/run --help` 
-You need to specify an ip using `--ip`. If you're running on your local machine, use `127.0.0.1`
+To list all available options, run `./bin/run --help` .
+You need to specify an ip using `--ip`. If you're running on your local machine, use `127.0.0.1`.
 
 Running multiple instances of the program will need you to specify a port using `--port`. After launching the first instance
 blackbox will tell you which port it's currently using. Solo mining is a posibility but defeats the main purpose of a decentralized network. 
