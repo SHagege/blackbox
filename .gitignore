@@ -5,3 +5,9 @@ __pycache__/
 
 # Trace files
 blackbox/blocks/*
+
+node_modules/
+venv/
+package-lock.json
+config.json
+explorer/db.sqlite3
