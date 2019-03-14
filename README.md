@@ -1,14 +1,15 @@
 # Blackbox
 
-In the recents months we've seen some big privacy and censorship problems coming from Facebook, Twitter and alike social medias.
-We can't trust those platforms anymore, as we can't be sure that what we post will stay forever or be suppressed
-by those corporations because they don’t like what we've said, or because someone else (e.g., the government) told them to take it down.
-We also see more and more individuals trying to delete social media posts because they want to cover something they said at some point
+There's been some big privacy and censorship problems coming from Facebook, Twitter and alike social medias.
+
+You can't be sure that what you post will stay forever or be suppressed by those companies because they don’t like what you've said, 
+or because someone else (e.g., the government) told them to take it down.
+There's also more and more individuals trying to delete social media posts because they want to cover something they said at some point
 in time.
 
-Blackbox is a program that uses blockchain technology to put every single thing an individual do or say on social media on a permisionless blockchain. 
-Anyone can join and confirm through proof-of-work that someone said something at some point in time. It's censorship resistant, and act as a great
-surveillance tool.
+Blackbox is a program that uses blockchain technology to put everything an individual do or say on social media on a permisionless blockchain. 
+Anyone can join and confirm through proof-of-work that someone said something at some point in time. 
+It's censorship resistant, and act as a great surveillance tool for malicious individuals.
 
 ## Requirements
 
@@ -36,7 +37,7 @@ Blackbox utilizes the [Kademlia Protocol](https://pdos.csail.mit.edu/~petar/pape
 hash table for building decentralized peer-to-peer networks (used in well known products like [BitTorrent](https://en.wikipedia.org/wiki/BitTorrent) or [Ethereum](https://www.ethereum.org/)).
 
 ## Block Explorer
-Blackbox's block explorer is built using Django. You can run your own server instance by running at the root directory
+Blackbox's block explorer is built using [Django](https://www.djangoproject.com/). You can run your own server instance by running at the root directory
 `python3 explorer/manage.py runserver`.
 
 By default the explorer is available at `127.0.0.1:8000`.
