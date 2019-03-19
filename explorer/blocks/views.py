@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from .models import BlockModel
 
-def block_detailed_view(request):
+def block_detailed_view(request, block_hash):
     if request.method == 'POST':
         user_input = request.POST.get('search', None)
         try:
@@ -21,3 +21,8 @@ def block_detailed_view(request):
             return render(request, "block/detail.html", info)
         except ObjectDoesNotExist:
             return render(request, 'home.html') 
+    block = BlockModel.objects.get(block_hash=block_hash)
+    info = {
+        'info': block
+    }
+    return render(request, "block/detail.html", info)
