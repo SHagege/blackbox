@@ -5,7 +5,6 @@ import threading
 import datetime as date
 from random import randint
 
-from py2p import mesh, base
 from termcolor import colored
 
 from .block import Block
@@ -57,7 +56,7 @@ class Blockchain:
     def mempoolHandling(self):
       """Starts a new thread that will handle the memory pool, putting inside it every X seconds Y 
       tweets from a social media account"""
-      threading.Timer(10.0, self.mempoolHandling).start()
+      threading.Timer(20.0, self.mempoolHandling).start()
       t = self.sm.apiTwitter.GetUserTimeline(screen_name=self.account, count=5)
       tweets = [i.AsDict() for i in t]
       for t in tweets:

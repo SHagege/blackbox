@@ -2,6 +2,7 @@ import hashlib
 import calendar
 import time
 import datetime as date
+from datetime import datetime
 import os
 import sys
 
@@ -9,8 +10,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "explorer.settings")
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/explorer"
 sys.path.append(BASE_DIR)
 import django
-
 django.setup()
+
 from blocks.models import BlockModel
 
 class Block:
@@ -77,7 +78,7 @@ class Block:
                 node.get_blockheight()
                 return
         self.constructFileContent()
-        BlockModel.objects.create(block_height=self.height, block_hash=self.block_header, timestamp=self.timestamp)
+        BlockModel.objects.create(block_height=self.height, block_hash=self.block_header, block_size=self.BLOCK_SIZE, timestamp=datetime.utcfromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S'), smdatax_count=len(self.data))
         return self.block_header
 
     def print_block_content(self):
