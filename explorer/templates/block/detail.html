@@ -1,12 +1,12 @@
-<!DOCTYPE html>
-<html>
+{% load static from staticfiles %}
+
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hello Bulma!</title>
+    <title>Blackbox Explorer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-    <link rel="stylesheet" href="styles/home.sass">
+    <link rel="stylesheet" href="{% static 'home.css' %}">
   </head>
   <body>
   <section class="section">
@@ -27,12 +27,22 @@
               </button>
         </form>
         {% block content %}
-        <p class="subtitle">
-            {{ height }}
-            {{ hash }}
+        <table class="table is-responsive">
+            <thead>
+              <tr>
+                <th>Block Height</th>
+                <th>Block Hash</th>
+                <th>Timestamp</th>
+                <th>Social Media Data</th>
+              </tr>
+              <tbody>
+                <tr>
+                    <td>{{ info.block_height }}</td>
+                    <td>{{ info.block_hash }}</td>
+                    <td>{{ info.timestamp }}</td>
+                    <td>{{ info.smdatax_count }}</td>
+                </tr>
         </p>
         {% endblock %}
     </div>
   </section>
-  </body>
-</html>

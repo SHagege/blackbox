@@ -23,5 +23,5 @@ urlpatterns = [
     path('', home_view, name='home'),
     path('about/', about_view),
     path('admin/', admin.site.urls),
-    path('detail/', block_detailed_view),
+    path('detail/<slug:block_hash>', block_detailed_view, name='detail_block'),
 ]
