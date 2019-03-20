@@ -11,3 +11,5 @@ venv/
 package-lock.json
 config.json
 explorer/db.sqlite3
+
+explorer/styles/*.css
