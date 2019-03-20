@@ -1,5 +1,6 @@
 {% load static from staticfiles %}
 
+{% block content %}
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,13 +18,14 @@
       <p class="subtitle">
         Search for block height, hash or social media ID
       </p>
-        <form method="POST" action="/detail/">
+        <form method="POST" action="/search/">
             {% csrf_token %}
             <div class="control">
                 <input class="input" type="text" placeholder="Search for block height, hash or social media ID" name="search">
               </div>
-            <button class="button" type="submit">
+            <button class="button">
                 Search
+                </a>
               </button>
         </form>
         <table class="table is-responsive">
@@ -35,7 +37,6 @@
                 <th>Size (KB)</th>
               </tr>
               <tbody>
-                    {% block content %}
                     {% for block_ in blocks %}
                     <tr>
                       <td>{{ block_.block_height }}</td>

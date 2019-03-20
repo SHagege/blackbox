@@ -17,12 +17,12 @@
       <p class="subtitle">
         Search for block height, hash or social media ID
       </p>
-        <form method="POST" action="/detail/">
+        <form method="POST" action="/search/">
             {% csrf_token %}
             <div class="control">
-                <input class="input" type="text" placeholder="Block height, hash or social media ID" name="search">
+                <input class="input" type="text" placeholder="Search for block height, hash or social media ID" name="search">
               </div>
-            <button class="button" type="submit">
+            <button class="button">
                 Search
               </button>
         </form>
@@ -37,12 +37,28 @@
               </tr>
               <tbody>
                 <tr>
-                    <td>{{ info.block_height }}</td>
-                    <td>{{ info.block_hash }}</td>
-                    <td>{{ info.timestamp }}</td>
-                    <td>{{ info.smdatax_count }}</td>
+                    <td>{{ info_blocks.block_height }}</td>
+                    <td>{{ info_blocks.block_hash }}</td>
+                    <td>{{ info_blocks.timestamp }}</td>
+                    <td>{{ info_blocks.smdatax_count }}</td>
                 </tr>
-        </p>
-        {% endblock %}
-    </div>
+              </body>
+              </thead>
+            </table>
+            <table class="table is-responsive">
+            <thead>
+              <tr>
+                <th>Social Media ID</th>
+                <th>Data</th>
+              </tr>
+              <tbody>
+                {% for data_ in info_datas %}
+                <tr>
+                  <td>{{ data_.unique_id }}</td>
+                  <td>{{ data_.data }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              {% endblock %}
+   </div>
   </section>

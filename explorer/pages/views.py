@@ -8,11 +8,8 @@ def home_view(request, *args, **kwargs):
     try:
         block = BlockModel.objects.all()
         info = {
-            'blocks': block
+            'blocks': block,
             }
         return render(request, "home.html", info)
     except ObjectDoesNotExist:
         return render(request, "home.html", {})
-
-def about_view(request, *args, **kwargs):
-    return render(request, "about.html", {})
