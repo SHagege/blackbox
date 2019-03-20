@@ -3,6 +3,16 @@ import calendar
 import time
 import base64
 import datetime as date
+import os
+import sys
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "explorer.settings")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/explorer"
+sys.path.append(BASE_DIR)
+import django
+django.setup()
+
+from smdataxs.models import Smdatax
 
 class Smdata:
     """
@@ -21,6 +31,7 @@ class Smdata:
         """
         self.smdataID = None
         self.data = data
+        self.belong_to_block = None
         self.inFileContent = None
         self.generate_smadataID()
         self.generate_inFile()
@@ -38,3 +49,5 @@ class Smdata:
         self.inFileContent = self.smdataID + ':' + str(base64.b64encode(bytes(str(self.data),
         'utf-8')).decode('utf-8')) + '/'
         
+    def generate_object(self):
+        Smdatax.objects.create(unique_id=self.smdataID, data=self.data, host_block=self.belong_to_block)

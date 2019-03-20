@@ -31,7 +31,7 @@ class Blockchain:
           port: The port you wish to bootstrap to
           ip: The ip you wish to connect to
       """
-      self.MAX_BLOCK_SIZE = 1024
+      self.MAX_BLOCK_SIZE = 2048
       self.currentFileIndex = 0
       self.openingPort = 0
       self.mempool = []
@@ -56,8 +56,8 @@ class Blockchain:
     def mempoolHandling(self):
       """Starts a new thread that will handle the memory pool, putting inside it every X seconds Y 
       tweets from a social media account"""
-      threading.Timer(20.0, self.mempoolHandling).start()
-      t = self.sm.apiTwitter.GetUserTimeline(screen_name=self.account, count=5)
+      threading.Timer(14.0, self.mempoolHandling).start()
+      t = self.sm.apiTwitter.GetUserTimeline(screen_name=self.account, count=20)
       tweets = [i.AsDict() for i in t]
       for t in tweets:
         smdata = Smdata(t['text'])
@@ -89,7 +89,10 @@ class Blockchain:
         print(colored("Block " + str(bNew.height) + " content: ", "green") + bNew.content)
         self.Node.block_height += 1
         self.Node.verified_block = False
-        return
+        for smdata in bNew.data:
+          smdata.belong_to_block = bNew.block_header
+          smdata.generate_object()
+      return
 
     def save_blocks(self, bNew):
       """Save the new blocks in a blk*.dat file"""
