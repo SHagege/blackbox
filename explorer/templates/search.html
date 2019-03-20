@@ -1,0 +1,64 @@
+{% load static from staticfiles %}
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blackbox Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+  </head>
+  <body>
+  <section class="section">
+    <div class="container">
+      <h1 class="title">
+        Blackbox Explorer
+      </h1>
+      <p class="subtitle">
+        Search for block height, hash or social media ID
+      </p>
+        <form method="POST" action="/search/">
+            {% csrf_token %}
+            <div class="control">
+                <input class="input" type="text" placeholder="Search for block height, hash or social media ID" name="search">
+              </div>
+            <button class="button">
+                Search
+              </button>
+        </form>
+        {% block content %}
+        <table class="table is-responsive">
+            <thead>
+              <tr>
+                <th>Block Height</th>
+                <th>Block Hash</th>
+                <th>Timestamp</th>
+                <th>Social Media Data</th>
+              </tr>
+              <tbody>
+                <tr>
+                    <td>{{ info_blocks.block_height }}</td>
+                    <td>{{ info_blocks.block_hash }}</td>
+                    <td>{{ info_blocks.timestamp }}</td>
+                    <td>{{ info_blocks.smdatax_count }}</td>
+                </tr>
+              </body>
+              </thead>
+            </table>
+            <table class="table is-responsive">
+            <thead>
+              <tr>
+                <th>Social Media ID</th>
+                <th>Data</th>
+              </tr>
+              <tbody>
+                {% for data_ in info_datas %}
+                <tr>
+                  <td>{{ data_.unique_id }}</td>
+                  <td>{{ data_.data }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              {% endblock %}
+   </div>
+  </section>
