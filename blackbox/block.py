@@ -6,6 +6,7 @@ from datetime import datetime
 import os
 import sys
 import json
+import asyncio
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "explorer.settings")
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/explorer"
@@ -72,14 +73,9 @@ class Block:
         cstr[self.nDifficulty - 1] = '\0'
         difficulty = "".join(str(x) for x in cstr)
         while ((self.block_header[0:self.nDifficulty - 1].strip('\0')) != difficulty.strip('\0')):
-            if node.verified_block is False or node.nodes is not "yes":
                 self.nonce += 1
                 self.block_header = self.proof_of_work()
-            else:
-                node.get_blockheight()
-                return
         self.constructFileContent()
-        print (self.data)
         BlockModel.objects.create(block_height=self.height, block_hash=self.block_header, block_size=self.BLOCK_SIZE, 
         timestamp=datetime.utcfromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S'), smdatax_count=len(self.data))
         return self.block_header

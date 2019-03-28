@@ -32,10 +32,10 @@ class Node:
             ip: The ip to connect to
         """
         self.connecting_port = connecting_port
-        self.opening_port = randint(4400, 4500)
+        self.opening_port = randint(8800, 9000)
         self.ip = ip
         self.block_height = 0
-        self.nodes = ""
+        self.nodes_connected = None
         self.node = None
         self.loop = None
         self.verified_block = False
@@ -83,14 +83,17 @@ class Node:
         self.loop.run_until_complete(self.node.listen(self.opening_port))
         bootstrap_node = (self.ip, int(self.connecting_port))
         self.loop.run_until_complete(self.node.bootstrap([bootstrap_node]))
-        self.loop.run_until_complete(self.node.set("nodes", "yes"))
+        self.loop.run_until_complete(self.node.set("nodes", True))
 
     def get_blockheight(self):
         """When other nodes join the network they need to start mining at the most
         up-to-date block"""
-        self.block_height = self.loop.run_until_complete(self.node.get("block_height"))
-        if self.block_height is None or 0:
+        block_height = self.loop.run_until_complete(self.node.get("block_height"))
+        if self.block_height is None or block_height is None or 0:
             self.get_blockheight()
+            return
+        if (block_height > self.block_height):
+            self.block_height = block_height
 
     def set_hash(self, block_hash):
         """When a new block is found, sets in the DHT the associated block_hash and block_height
@@ -112,14 +115,29 @@ class Node:
             return asyncio.run_coroutine_threadsafe(self.node.get(key), self.loop)
         return self.loop.run_until_complete(self.node.get(key))
 
+    def broadcast(self, hash_broadcasted):
+        if self.connecting_port is None:
+            hash_broadcasted = hash_broadcasted.result()
+        if hash_broadcasted is not None:
+            if hash_broadcasted.startswith("0000"):
+                if self.connecting_port is None:
+                    asyncio.run_coroutine_threadsafe(self.node.set("verified_block", True), self.loop)
+                else:
+                    self.loop.run_until_complete(self.node.set("verified_block", True))
+                return True
+        return False
+
     def verify(self):
         """Verify if a block_hash found by a node is a correct one"""
         key = "blk" + str(self.block_height)
-        if self.connecting_port is None and self.nodes is not "yes":
-            self.nodes = asyncio.run_coroutine_threadsafe(self.node.get("nodes"), self.loop)
-            self.verified_block = True
-            return
-        result = self.loop.run_until_complete(self.node.get(key))
-        if result is not None:
-            if result.startswith("0000"):
-                self.verified_block = True
+        if self.connecting_port is None:
+            self.nodes_connected = asyncio.run_coroutine_threadsafe(self.node.get("nodes"), self.loop)
+            if self.nodes_connected.result() is not True:
+                asyncio.run_coroutine_threadsafe(self.node.set("verified_block", True), self.loop)
+                return True
+            else:
+                hash_broadcasted = asyncio.run_coroutine_threadsafe(self.node.get(key), self.loop)
+                return (self.broadcast(hash_broadcasted))
+        else:
+            hash_broadcasted = self.loop.run_until_complete(self.node.get(key))
+            return (self.broadcast(hash_broadcasted))
