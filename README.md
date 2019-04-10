@@ -20,9 +20,9 @@ It's censorship resistant, and act as a great surveillance tool for malicious in
 
 ## Installation
 
-Run
+Run in the root directory
 ```
-pip3 install -r requirements.txt
+./setup.sh
 ```
 
 ## Configuration
