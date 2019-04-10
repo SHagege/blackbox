@@ -41,7 +41,6 @@ Blackbox's block explorer is built using [Django](https://www.djangoproject.com/
 `python3 explorer/manage.py runserver`.
 
 By default the explorer is available at `127.0.0.1:8000`.
-You can search using block height, hash or social media data ID.
 
 ## Running blackbox
 
