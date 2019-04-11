@@ -71,10 +71,8 @@ class Block:
         """
         target = self.TARGET_MAX / self.nDifficulty
         while (int(self.block_header, 16) > int(target)):
-                print(int(self.block_header, 16))
                 self.nonce += 1
                 self.block_header = self.proof_of_work()
-        print("BLOCK FOUND MOTHAFUCKA: " + str(self.block_header))
         self.constructFileContent()
         BlockModel.objects.create(block_height=self.height, block_hash=self.block_header, block_size=self.BLOCK_SIZE, 
         timestamp=datetime.utcfromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S'), smdatax_count=len(self.data))

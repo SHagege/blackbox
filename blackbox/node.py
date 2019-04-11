@@ -141,7 +141,6 @@ class Node:
             difficulty: The current difficulty of the network
         """
         key = "blk" + str(self.block_height)
-        print("Verifying")
         if self.connecting_port is None:
             self.nodes_connected = asyncio.run_coroutine_threadsafe(self.node.get("nodes"), self.loop)
             if self.nodes_connected.result() is not True:
