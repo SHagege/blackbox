@@ -7,7 +7,7 @@ or because someone else (e.g., the government) told them to take it down.
 There's also more and more individuals trying to delete social media posts because they want to cover something they said at some point
 in time.
 
-Blackbox is a program that uses blockchain technology to put everything an individual do or say on social media on a permisionless blockchain. 
+Blackbox put everything an individual do or say on social media on a permisionless blockchain built from scratch.
 Anyone can join and confirm through proof-of-work that someone said something at some point in time. 
 It's censorship resistant, and act as a great surveillance tool for malicious individuals.
 
