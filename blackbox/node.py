@@ -115,11 +115,18 @@ class Node:
             return asyncio.run_coroutine_threadsafe(self.node.get(key), self.loop)
         return self.loop.run_until_complete(self.node.get(key))
 
-    def broadcast(self, hash_broadcasted):
+    def broadcast(self, hash_broadcasted, difficulty):
+        """
+        Args:
+            hash_broadcasted: The hash that a node broadcasted to the network
+            difficulty: The current difficulty on the network
+        """
         if self.connecting_port is None:
             hash_broadcasted = hash_broadcasted.result()
         if hash_broadcasted is not None:
-            if hash_broadcasted.startswith("0000"):
+            target_max = 0x00000000FFFF0000000000000000000000000000000000000000000000000000
+            target = target_max / difficulty
+            if int(hash_broadcasted, 16) < int(target):
                 if self.connecting_port is None:
                     asyncio.run_coroutine_threadsafe(self.node.set("verified_block", True), self.loop)
                 else:
@@ -127,9 +134,14 @@ class Node:
                 return True
         return False
 
-    def verify(self):
-        """Verify if a block_hash found by a node is a correct one"""
+    def verify(self, difficulty):
+        """Verify if a block_hash found by a node is a correct one
+
+        Args:
+            difficulty: The current difficulty of the network
+        """
         key = "blk" + str(self.block_height)
+        print("Verifying")
         if self.connecting_port is None:
             self.nodes_connected = asyncio.run_coroutine_threadsafe(self.node.get("nodes"), self.loop)
             if self.nodes_connected.result() is not True:
@@ -137,7 +149,7 @@ class Node:
                 return True
             else:
                 hash_broadcasted = asyncio.run_coroutine_threadsafe(self.node.get(key), self.loop)
-                return (self.broadcast(hash_broadcasted))
+                return (self.broadcast(hash_broadcasted, difficulty))
         else:
             hash_broadcasted = self.loop.run_until_complete(self.node.get(key))
-            return (self.broadcast(hash_broadcasted))
+            return (self.broadcast(hash_broadcasted, difficulty))

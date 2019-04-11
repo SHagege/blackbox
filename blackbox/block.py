@@ -33,16 +33,17 @@ class Block:
         block_header: The hash of the block
     """
 
-    def __init__(self, height):
+    def __init__(self, height, difficulty):
         """
         Create a new block
 
         Args:
             height: The height at which the block needs to be created 
         """
+        self.TARGET_MAX = 0x00000000FFFF0000000000000000000000000000000000000000000000000000
         self.height = height
         self.merkleTree = None
-        self.nDifficulty = 6
+        self.nDifficulty = difficulty
         self.timestamp = 0
         self.data = []
         self.previous_hash = None
@@ -63,25 +64,21 @@ class Block:
         return dsha.hexdigest()
 
     def mine_block(self, node):
-        """Create the difficulty (i.e how many zero's need to be in front of the hash)
-        and loop through hash_block until the system finds the correct hash
+        """Do a proof-of-work until the hash found is lower than the difficulty target
         
         Args:
             node: The node of the blockchain
         """
-        cstr = [0] * self.nDifficulty
-        cstr[self.nDifficulty - 1] = '\0'
-        difficulty = "".join(str(x) for x in cstr)
-        while ((self.block_header[0:self.nDifficulty - 1].strip('\0')) != difficulty.strip('\0')):
+        target = self.TARGET_MAX / self.nDifficulty
+        while (int(self.block_header, 16) > int(target)):
+                print(int(self.block_header, 16))
                 self.nonce += 1
                 self.block_header = self.proof_of_work()
+        print("BLOCK FOUND MOTHAFUCKA: " + str(self.block_header))
         self.constructFileContent()
         BlockModel.objects.create(block_height=self.height, block_hash=self.block_header, block_size=self.BLOCK_SIZE, 
         timestamp=datetime.utcfromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S'), smdatax_count=len(self.data))
         return self.block_header
-
-    def print_block_content(self):
-        print(self.data)
 
     def constructFileContent(self):
         """What is written inside the blk*.dat files"""
