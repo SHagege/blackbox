@@ -33,6 +33,8 @@ class Node:
         """
         self.connecting_port = connecting_port
         self.opening_port = randint(8800, 9000)
+        self.TARGET_MAX = 0x0000FFFFFFFFFFFFFFFFFFFFFFF000000000000000000000000000000000000
+        self.target = 1
         self.ip = ip
         self.block_height = 0
         self.nodes_connected = None
@@ -124,9 +126,8 @@ class Node:
         if self.connecting_port is None:
             hash_broadcasted = hash_broadcasted.result()
         if hash_broadcasted is not None:
-            target_max = 0x00000000FFFF0000000000000000000000000000000000000000000000000000
-            target = target_max / difficulty
-            if int(hash_broadcasted, 16) < int(target):
+            self.target = self.TARGET_MAX / difficulty
+            if int(hash_broadcasted, 16) < int(self.target):
                 if self.connecting_port is None:
                     asyncio.run_coroutine_threadsafe(self.node.set("verified_block", True), self.loop)
                 else:

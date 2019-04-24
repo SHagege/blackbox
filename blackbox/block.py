@@ -40,7 +40,6 @@ class Block:
         Args:
             height: The height at which the block needs to be created 
         """
-        self.TARGET_MAX = 0x00000000FFFF0000000000000000000000000000000000000000000000000000
         self.height = height
         self.merkleTree = None
         self.nDifficulty = difficulty
@@ -55,8 +54,7 @@ class Block:
 
     def proof_of_work(self):
         """Hash the block by doing a double SHA256 encoding with the block's attributes"""
-        self.timestamp = calendar.timegm(time.gmtime())
-        sha = hashlib.sha256(str(self.height).encode('utf-8') + str(self.timestamp).encode('utf-8') + 
+        sha = hashlib.sha256(str(self.height).encode('utf-8') + 
         str(self.data).encode('utf-8') + str(self.previous_hash).encode('utf-8') + str(self.nonce).encode('utf-8') + str(self.nDifficulty).encode('utf-8'))
         dsha = hashlib.sha256()
         sha.hexdigest()
@@ -69,10 +67,11 @@ class Block:
         Args:
             node: The node of the blockchain
         """
-        target = self.TARGET_MAX / self.nDifficulty
+        target = node.TARGET_MAX / self.nDifficulty
         while (int(self.block_header, 16) > int(target)):
                 self.nonce += 1
                 self.block_header = self.proof_of_work()
+        self.timestamp = calendar.timegm(time.gmtime())
         self.constructFileContent()
         BlockModel.objects.create(block_height=self.height, block_hash=self.block_header, block_size=self.BLOCK_SIZE, 
         timestamp=datetime.utcfromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S'), smdatax_count=len(self.data))

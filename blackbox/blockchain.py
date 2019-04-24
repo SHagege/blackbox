@@ -35,7 +35,7 @@ class Blockchain:
             port: The port you wish to bootstrap to
             ip: The ip you wish to connect to
         """
-        self.MAX_BLOCK_SIZE = 1024
+        self.MAX_BLOCK_SIZE = 4096
         self.currentFileIndex = 0
         self.openingPort = 0
         self.difficulty = 1
@@ -80,7 +80,7 @@ class Blockchain:
         tweets from a social media account"""
         threading.Timer(60.0, self.mempoolHandling).start()
         t = self.sm.apiTwitter.GetUserTimeline(
-            screen_name=self.account, count=7)
+            screen_name=self.account, count=10)
         tweets = [i.AsDict() for i in t]
         for t in tweets:
             smdata = Smdata(t['text'])
