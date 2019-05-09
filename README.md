@@ -9,7 +9,7 @@ in time.
 
 Blackbox puts everything an individual do or say on social media on a permisionless blockchain built from scratch.
 Anyone can join and confirm through proof-of-work that someone said something at some point in time. 
-It's censorship resistant, and act as a great surveillance tool for malicious individuals.
+It is censorship resistant and acts as a great surveillance tool against malicious individuals.
 
 ## Requirements
 
