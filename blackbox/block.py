@@ -54,7 +54,8 @@ class Block:
 
     def proof_of_work(self):
         """Hash the block by doing a double SHA256 encoding with the block's attributes"""
-        sha = hashlib.sha256(str(self.height).encode('utf-8') + 
+        self.timestamp = calendar.timegm(time.gmtime())
+        sha = hashlib.sha256(str(self.height).encode('utf-8') + str(self.timestamp).encode('utf-8') + 
         str(self.data).encode('utf-8') + str(self.previous_hash).encode('utf-8') + str(self.nonce).encode('utf-8') + str(self.nDifficulty).encode('utf-8'))
         dsha = hashlib.sha256()
         sha.hexdigest()
